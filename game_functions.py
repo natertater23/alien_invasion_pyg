@@ -9,16 +9,16 @@ def check_events(settings, screen, ship, lasers):
         # Exit's Game
         if event.type == pygame.QUIT:
             sys.exit()
-        # When key is pressed right and left arrow key respond
+        # When key is pressed right and left arrow key respond and space bar shoots lasers
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_RIGHT:
-                ship.rect.centerx += 1
                 ship.moving_right = True
             elif event.key == pygame.K_LEFT:
                 ship.moving_left = True
             elif event.key == pygame.K_SPACE:
-                new_laser = Laser(settings, screen, ship)
-                lasers.add(new_laser)
+                if len(lasers) < settings.lasers_allowed:
+                    new_laser = Laser(settings, screen, ship)
+                    lasers.add(new_laser)
         # Makes sure we stop moving when key is not pressed
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_RIGHT:
@@ -34,3 +34,11 @@ def update_screen(settings, screen, ship, lasers):
         laser.draw_laser()
     ship.blitme()
     pygame.display.flip()
+
+
+def update_lasers(lasers):
+    lasers.update()
+    # Remove excess lasers
+    for laser in lasers.copy():
+        if laser.rect.bottom <= 0:
+            lasers.remove(laser)

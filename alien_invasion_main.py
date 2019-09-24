@@ -20,13 +20,8 @@ def play():
 
         gf.check_events(settings, screen, ship, lasers)
         ship.update()
-        lasers.update()
 
-        for laser in lasers.copy():
-            if laser.rect.bottom <= 0:
-                lasers.remove(laser)
-        # print(len(lasers))
-
+        gf.update_lasers(lasers)
         gf.update_screen(settings, screen, ship, lasers)
 
 
