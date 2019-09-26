@@ -11,18 +11,20 @@ def play():
     # Create Window
     screen = pygame.display.set_mode((settings.screen_width, settings.screen_height))
     pygame.display.set_caption("Alien Invasion")
-
+    
     ship = Ship(settings, screen)
     lasers = Group()
-
+    aliens = Group()
+    gf.create_aliens(settings, screen, ship, aliens)
     # Game loop
     while True:
 
-        gf.check_events(settings, screen, ship, lasers)
+        gf.check_user(settings, screen, ship, lasers)
         ship.update()
 
         gf.update_lasers(lasers)
-        gf.update_screen(settings, screen, ship, lasers)
+        gf.update_aliens(aliens)
+        gf.update_screen(settings, screen, ship, aliens, lasers)
 
 
 play()

@@ -23,9 +23,9 @@ class Ship:
     # Handles movement update and makes sure its in bounds
     def update(self):
         if self.moving_right and self.rect.right < self.screen_rect.right:
-            self.center += self.settings.ship_speed_factor
+            self.center += self.settings.ship_speed
         if self.moving_left and self.rect.left > 0:
-            self.center -= self.settings.ship_speed_factor
+            self.center -= self.settings.ship_speed
 
         self.rect.centerx = self.center
 

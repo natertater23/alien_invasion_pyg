@@ -15,10 +15,10 @@ class Laser(Sprite):
         self.y = float(self.rect.y)
 
         self.color = settings.laser_color
-        self.speed_factor = settings.laser_speed_factor
+        self.speed = settings.laser_speed
 
     def update(self):
-        self.y -= self.speed_factor
+        self.y -= self.speed
         self.rect.y = self.y
 
     def draw_laser(self):
