@@ -2,6 +2,7 @@ import sys
 import pygame
 from laser import Laser
 from alien import Alien
+from time import sleep
 
 
 # This will handle key presses and exiting the game
@@ -64,12 +65,18 @@ def change_fleet_direction(settings, aliens):
     settings.fleet_direction *= -1
 
 
-def update_aliens(settings, ship, aliens):
+def update_aliens(settings, stats, screen, ship, aliens, lasers):
     check_fleet_edges(settings, aliens)
     aliens.update()
 
-    if pygame.sprite.spritecollideany(ship, aliens):
-        print("Ship hit")
+    if pygame.sprite.spritecollideany(settings, stats, screen, ship, aliens, lasers):
+        ship_hit(settings, stats, screen, ship, aliens, lasers)
+    # Check aliens on bottom of screen
+    screen_rect = screen.get_rect()
+    for alien in aliens.sprites():
+        if alien.rect.bottom >= screen_rect.bottom:
+            ship_hit(settings, stats, screen, ship, aliens, lasers)
+            break
 
 
 def create_aliens(settings, screen, ship, aliens):
@@ -87,3 +94,17 @@ def create_aliens(settings, screen, ship, aliens):
             alien.x = alien_width + 2 * alien_width * alien_number
             alien.rect.x = alien.x
             aliens.add(alien)
+
+
+def ship_hit(settings, stats, screen, ship, aliens, lasers):
+    if stats.ships_left > 0:
+        stats.ships_left -= 1
+        aliens.empty()
+        lasers.empty()
+
+        create_aliens(settings, screen, ship, aliens)
+        ship.center_ship()
+
+        sleep(0.5)
+    else:
+        stats.game_active = False
