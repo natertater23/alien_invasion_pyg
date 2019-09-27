@@ -23,7 +23,7 @@ class Scoreboard:
         for ship_number in range(self.stats.ships_left):
             ship = Ship(self.settings, self.screen)
             ship.rect.x = 10 + ship_number * ship.rect.width
-            ship.rect.y = 10
+            ship.rect.y = 700
             self.ships.add(ship)
 
     def prep_score(self):
