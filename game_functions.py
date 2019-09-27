@@ -6,7 +6,7 @@ from time import sleep
 
 
 # This will handle key presses and exiting the game
-def check_user(settings, screen, stats, button, ship, aliens, lasers):
+def check_user(settings, screen, stats, score, button, ship, aliens, lasers):
     for event in pygame.event.get():
         # Exit's Game
         if event.type == pygame.QUIT:
@@ -29,6 +29,10 @@ def check_user(settings, screen, stats, button, ship, aliens, lasers):
                 pygame.mouse.set_visible(False)
                 stats.reset_stats()
                 stats.game_active = True
+                score.prep_score()
+                score.prep_high_score()
+                score.prep_level()
+                score.prep_ships()
                 aliens.empty()
                 lasers.empty()
                 create_aliens(settings, screen, ship, aliens)
@@ -70,6 +74,8 @@ def update_lasers(settings, screen, stats, score, ship, aliens, lasers):
     if len(aliens) == 0:
         lasers.empty()
         settings.increase_speed()
+        stats.level += 1
+        score.prep_level()
         create_aliens(settings, screen, ship, aliens)
 
 
@@ -86,17 +92,17 @@ def change_fleet_direction(settings, aliens):
     settings.fleet_direction *= -1
 
 
-def update_aliens(settings, stats, screen, ship, aliens, lasers):
+def update_aliens(settings, screen, stats, score, ship, aliens, lasers):
     check_fleet_edges(settings, aliens)
     aliens.update()
 
     if pygame.sprite.spritecollideany(ship, aliens):
-        ship_hit(settings, stats, screen, ship, aliens, lasers)
+        ship_hit(settings, screen, stats, score, ship, aliens, lasers)
     # Check aliens on bottom of screen
     screen_rect = screen.get_rect()
     for alien in aliens.sprites():
         if alien.rect.bottom >= screen_rect.bottom:
-            ship_hit(settings, stats, screen, ship, aliens, lasers)
+            ship_hit(settings, screen, stats, score, ship, aliens, lasers)
             break
 
 
@@ -117,9 +123,10 @@ def create_aliens(settings, screen, ship, aliens):
             aliens.add(alien)
 
 
-def ship_hit(settings, stats, screen, ship, aliens, lasers):
+def ship_hit(settings, screen, stats, score, ship, aliens, lasers):
     if stats.ships_left > 0:
         stats.ships_left -= 1
+        score.prep_ships()
         aliens.empty()
         lasers.empty()
 
@@ -135,4 +142,4 @@ def ship_hit(settings, stats, screen, ship, aliens, lasers):
 def check_high_score(stats, score):
     if stats.score > stats.high_score:
         stats.high_score = stats.score
-        score.prep_high_score
+        score.prep_high_score()

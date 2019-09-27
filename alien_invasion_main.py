@@ -25,12 +25,12 @@ def play():
     # Game loop
     while True:
 
-        gf.check_user(settings, screen, stats, button, ship, aliens, lasers)
+        gf.check_user(settings, screen, stats, score, button, ship, aliens, lasers)
 
         if stats.game_active:
             ship.update()
             gf.update_lasers(settings, screen, stats, score, ship, aliens, lasers)
-            gf.update_aliens(settings, stats, screen, ship, aliens, lasers)
+            gf.update_aliens(settings, screen, stats, score, ship, aliens, lasers)
         gf.update_screen(settings, screen, stats, score, ship, aliens, lasers, button)
 
 
