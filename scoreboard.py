@@ -13,6 +13,13 @@ class Scoreboard:
 
         self.txt_color = (30, 30, 30)
         self.font = pygame.font.SysFont(None, 48)
+        self.ships = None
+        self.score_image = None
+        self.score_rect = None
+        self.high_score_image = None
+        self.high_score_rect = None
+        self.level_image = None
+        self.level_rect = None
         self.prep_score()
         self.prep_high_score()
         self.prep_level()
