@@ -19,3 +19,17 @@ class Settings:
         self.alien_speed = 1
         self.fleet_speed = 10
         self.fleet_direction = 1  # 1 is right -1 is left
+        # Game settings
+        self.speed_up = 1.2
+        self.initialize_dynamic_settings()
+
+    def initialize_dynamic_settings(self):
+        self.ship_speed = 1.5
+        self.laser_speed = 3
+        self.alien_speed = 1
+        self.fleet_direction = 1
+
+    def increase_speed(self):
+        self.ship_speed *= self.speed_up
+        self.laser_speed *= self.speed_up
+        self.alien_speed *= self.speed_up

@@ -6,7 +6,7 @@ from time import sleep
 
 
 # This will handle key presses and exiting the game
-def check_user(settings, screen, ship, lasers):
+def check_user(settings, screen, stats, button, ship, aliens, lasers):
     for event in pygame.event.get():
         # Exit's Game
         if event.type == pygame.QUIT:
@@ -21,6 +21,18 @@ def check_user(settings, screen, ship, lasers):
                 if len(lasers) < settings.lasers_allowed:
                     new_laser = Laser(settings, screen, ship)
                     lasers.add(new_laser)
+        # Play button
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            mouse_x, mouse_y = pygame.mouse.get_pos()
+            if button.rect.collidepoint(mouse_x, mouse_y) and not stats.game_active:
+                settings.initialize_dynamic_settings()
+                pygame.mouse.set_visible(False)
+                stats.reset_stats()
+                stats.game_active = True
+                aliens.empty()
+                lasers.empty()
+                create_aliens(settings, screen, ship, aliens)
+                ship.center_ship()
         # Makes sure we stop moving when key is not pressed
         elif event.type == pygame.KEYUP:
             if event.key == pygame.K_RIGHT:
@@ -30,12 +42,14 @@ def check_user(settings, screen, ship, lasers):
 
 
 # Handles the drawing and updates screen
-def update_screen(settings, screen, ship, aliens, lasers):
+def update_screen(settings, screen, stats, ship, aliens, lasers, button):
     screen.fill(settings.bg_color)
     for laser in lasers.sprites():
         laser.draw_laser()
     ship.blitme()
     aliens.draw(screen)
+    if not stats.game_active:
+        button.draw_button()
     pygame.display.flip()
 
 
@@ -49,6 +63,7 @@ def update_lasers(settings, screen, ship, aliens, lasers):
 
     if len(aliens) == 0:
         lasers.empty()
+        settings.increase_speed()
         create_aliens(settings, screen, ship, aliens)
 
 
@@ -69,7 +84,7 @@ def update_aliens(settings, stats, screen, ship, aliens, lasers):
     check_fleet_edges(settings, aliens)
     aliens.update()
 
-    if pygame.sprite.spritecollideany(settings, stats, screen, ship, aliens, lasers):
+    if pygame.sprite.spritecollideany(ship, aliens):
         ship_hit(settings, stats, screen, ship, aliens, lasers)
     # Check aliens on bottom of screen
     screen_rect = screen.get_rect()
@@ -108,3 +123,4 @@ def ship_hit(settings, stats, screen, ship, aliens, lasers):
         sleep(0.5)
     else:
         stats.game_active = False
+        pygame.mouse.set_visible(True)
