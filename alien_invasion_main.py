@@ -23,10 +23,10 @@ def play():
 
         gf.check_user(settings, screen, ship, lasers)
         ship.update()
-    
-        gf.update_lasers(settings, screen, ship, aliens, lasers)
-        gf.update_aliens(settings, stats, screen, ship, aliens, lasers)
-        gf.update_screen(settings, screen, ship, aliens, lasers)
+        if stats.game_active:
+            gf.update_lasers(settings, screen, ship, aliens, lasers)
+            gf.update_aliens(settings, stats, screen, ship, aliens, lasers)
+            gf.update_screen(settings, screen, ship, aliens, lasers)
 
 
 play()
