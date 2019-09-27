@@ -38,16 +38,38 @@ def update_screen(settings, screen, ship, aliens, lasers):
     pygame.display.flip()
 
 
-def update_lasers(lasers):
+def update_lasers(settings, screen, ship, aliens, lasers):
     lasers.update()
     # Remove excess lasers
     for laser in lasers.copy():
         if laser.rect.bottom <= 0:
             lasers.remove(laser)
+    collisions = pygame.sprite.groupcollide(lasers, aliens, True, True)
+
+    if len(aliens) == 0:
+        lasers.empty()
+        create_aliens(settings, screen, ship, aliens)
 
 
-def update_aliens(aliens):
-    aliens.update
+def check_fleet_edges(settings, aliens):
+    for alien in aliens.sprites():
+        if alien.check_edges():
+            change_fleet_direction(settings, aliens)
+            break
+
+
+def change_fleet_direction(settings, aliens):
+    for alien in aliens.sprites():
+        alien.rect.y += settings.fleet_speed
+    settings.fleet_direction *= -1
+
+
+def update_aliens(settings, ship, aliens):
+    check_fleet_edges(settings, aliens)
+    aliens.update()
+
+    if pygame.sprite.spritecollideany(ship, aliens):
+        print("Ship hit")
 
 
 def create_aliens(settings, screen, ship, aliens):
