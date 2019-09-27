@@ -42,24 +42,30 @@ def check_user(settings, screen, stats, button, ship, aliens, lasers):
 
 
 # Handles the drawing and updates screen
-def update_screen(settings, screen, stats, ship, aliens, lasers, button):
+def update_screen(settings, screen, stats, score, ship, aliens, lasers, button):
     screen.fill(settings.bg_color)
     for laser in lasers.sprites():
         laser.draw_laser()
     ship.blitme()
     aliens.draw(screen)
+    score.show_score()
     if not stats.game_active:
         button.draw_button()
     pygame.display.flip()
 
 
-def update_lasers(settings, screen, ship, aliens, lasers):
+def update_lasers(settings, screen, stats, score, ship, aliens, lasers):
     lasers.update()
     # Remove excess lasers
     for laser in lasers.copy():
         if laser.rect.bottom <= 0:
             lasers.remove(laser)
     collisions = pygame.sprite.groupcollide(lasers, aliens, True, True)
+    if collisions:
+        for aliens in collisions.values():
+            stats.score += settings.alien_points * len(aliens)
+            score.prep_score()
+        check_high_score(stats, score)
 
     if len(aliens) == 0:
         lasers.empty()
@@ -124,3 +130,9 @@ def ship_hit(settings, stats, screen, ship, aliens, lasers):
     else:
         stats.game_active = False
         pygame.mouse.set_visible(True)
+
+
+def check_high_score(stats, score):
+    if stats.score > stats.high_score:
+        stats.high_score = stats.score
+        score.prep_high_score
